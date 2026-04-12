@@ -1,7 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CRMContext = createContext();
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+// For Vercel production: use relative path /api
+// For local dev: use http://localhost:5000/api
+const API_URL = import.meta.env.VITE_API_URL || 
+                (typeof window !== 'undefined' && window.location.hostname === 'localhost' 
+                  ? 'http://localhost:5000/api' 
+                  : '/api');
 
 export const useCRM = () => useContext(CRMContext);
 

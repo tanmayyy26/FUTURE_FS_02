@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 import { Settings as SettingsIcon, Save, Eye, EyeOff } from 'lucide-react';
+import { useCRM } from '../context/CRMContext';
+
+const API_URL = import.meta.env.VITE_API_URL || 
+                (typeof window !== 'undefined' && window.location.hostname === 'localhost' 
+                  ? 'http://localhost:5000/api' 
+                  : '/api');
 
 const Settings = ({ admin }) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +36,7 @@ const Settings = ({ admin }) => {
         setLoading(true);
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch('http://localhost:5000/api/auth/change-password', {
+            const response = await fetch(`${API_URL}/auth/change-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

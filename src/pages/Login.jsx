@@ -19,7 +19,10 @@ const Login = ({ onLoginSuccess }) => {
         setLoading(true);
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+            // For Vercel production: use relative path /api
+            // For local dev: use http://localhost:5000/api
+            const apiUrl = import.meta.env.VITE_API_URL || 
+                          (window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api');
             const response = await fetch(`${apiUrl}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
