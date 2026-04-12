@@ -42,14 +42,6 @@ export const CRMProvider = ({ children }) => {
         setLeads([]);
     };
 
-    // Login function to update auth state
-    const login = (token, adminData) => {
-        localStorage.setItem('authToken', token);
-        localStorage.setItem('admin', JSON.stringify(adminData));
-        setAdmin(adminData);
-        setIsAuthenticated(true);
-    };
-
     const fetchLeads = async () => {
         try {
             setLoading(true);
