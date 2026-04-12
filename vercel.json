@@ -25,6 +25,7 @@
   ],
   "env": {
     "MONGODB_URI": "@mongodb_uri",
-    "JWT_SECRET": "@jwt_secret"
+    "JWT_SECRET": "@jwt_secret",
+    "VITE_API_URL": "@vite_api_url"
   }
 }
