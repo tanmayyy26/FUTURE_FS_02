@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCRM } from '../context/CRMContext';
 import { LogIn } from 'lucide-react';
 
 const Login = ({ onLoginSuccess }) => {
     const navigate = useNavigate();
+    const { login } = useCRM();
     const [formData, setFormData] = useState({
         email: 'admin@crm.com',
         password: 'AdminSecure@2024'
@@ -31,9 +33,8 @@ const Login = ({ onLoginSuccess }) => {
             const data = await response.json();
             console.log('Login successful:', data);
 
-            // Store token in localStorage
-            localStorage.setItem('authToken', data.token);
-            localStorage.setItem('admin', JSON.stringify(data.admin));
+            // Update auth state in context
+            login(data.token, data.admin);
 
             // Call parent callback
             onLoginSuccess(data.admin);

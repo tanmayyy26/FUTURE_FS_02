@@ -25,6 +25,31 @@ export const CRMProvider = ({ children }) => {
         }
     }, [isAuthenticated]);
 
+    // Login function to update auth state
+    const login = (token, adminData) => {
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('admin', JSON.stringify(adminData));
+        setAdmin(adminData);
+        setIsAuthenticated(true);
+    };
+
+    // Logout function
+    const logout = () => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('admin');
+        setAdmin(null);
+        setIsAuthenticated(false);
+        setLeads([]);
+    };
+
+    // Login function to update auth state
+    const login = (token, adminData) => {
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('admin', JSON.stringify(adminData));
+        setAdmin(adminData);
+        setIsAuthenticated(true);
+    };
+
     const fetchLeads = async () => {
         try {
             setLoading(true);
@@ -159,14 +184,6 @@ export const CRMProvider = ({ children }) => {
     const activeLeadsCount = leads.filter(l => l.status === 'New' || l.status === 'Contacted').length;
     const matchRate = leads.length ? Math.round((leads.filter(l => l.status === 'Won').length / leads.length) * 100) : 0;
 
-    const logout = () => {
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('admin');
-        setAdmin(null);
-        setIsAuthenticated(false);
-        setLeads([]);
-    };
-
     return (
         <CRMContext.Provider value={{ 
             leads, 
@@ -176,6 +193,7 @@ export const CRMProvider = ({ children }) => {
             addFollowUp,
             deleteFollowUp,
             logout,
+            login,
             admin,
             isAuthenticated,
             stats: { total: leads.length, active: activeLeadsCount, conversion: matchRate },

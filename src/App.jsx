@@ -40,6 +40,8 @@ const SettingsPageWrapper = () => {
 };
 
 function App() {
+  const { isAuthenticated } = useCRM();
+
   return (
     <CRMProvider>
       <Router>
@@ -53,7 +55,7 @@ function App() {
           <Route 
             path="/" 
             element={
-              <ProtectedRoute isAuthenticated={localStorage.getItem('authToken')}>
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <AppLayout />
               </ProtectedRoute>
             }
