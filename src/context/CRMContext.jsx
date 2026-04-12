@@ -1,0 +1,141 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+const CRMContext = createContext();
+const API_URL = 'http://localhost:5000/api';
+
+export const useCRM = () => useContext(CRMContext);
+
+export const CRMProvider = ({ children }) => {
+    const [leads, setLeads] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Fetch leads from backend
+    useEffect(() => {
+        fetchLeads();
+    }, []);
+
+    const fetchLeads = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch(`${API_URL}/leads`);
+            if (!response.ok) throw new Error('Failed to fetch leads');
+            const data = await response.json();
+            setLeads(data);
+        } catch (err) {
+            setError(err.message);
+            console.error('Error fetching leads:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const addLead = async (lead) => {
+        try {
+            const response = await fetch(`${API_URL}/leads`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(lead)
+            });
+            if (!response.ok) throw new Error('Failed to add lead');
+            const newLead = await response.json();
+            setLeads([newLead, ...leads]);
+            return newLead;
+        } catch (err) {
+            setError(err.message);
+            console.error('Error adding lead:', err);
+        }
+    };
+
+    const updateStatus = async (id, newStatus) => {
+        try {
+            const response = await fetch(`${API_URL}/leads/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+            if (!response.ok) throw new Error('Failed to update lead');
+            const updatedLead = await response.json();
+            setLeads(leads.map(l => l._id === id ? updatedLead : l));
+        } catch (err) {
+            setError(err.message);
+            console.error('Error updating lead:', err);
+        }
+    };
+
+    const deleteLead = async (id) => {
+        try {
+            const response = await fetch(`${API_URL}/leads/${id}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok) throw new Error('Failed to delete lead');
+            setLeads(leads.filter(l => l._id !== id));
+        } catch (err) {
+            setError(err.message);
+            console.error('Error deleting lead:', err);
+        }
+    };
+
+    const addFollowUp = async (leadId, note, date) => {
+        try {
+            const response = await fetch(`${API_URL}/leads/${leadId}/follow-ups`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ note, date })
+            });
+            if (!response.ok) throw new Error('Failed to add follow-up');
+            const followUp = await response.json();
+            
+            // Update the lead in state
+            setLeads(leads.map(l => {
+                if (l._id === leadId) {
+                    return { ...l, followUps: [...(l.followUps || []), followUp] };
+                }
+                return l;
+            }));
+            return followUp;
+        } catch (err) {
+            setError(err.message);
+            console.error('Error adding follow-up:', err);
+        }
+    };
+
+    const deleteFollowUp = async (leadId, followUpId) => {
+        try {
+            const response = await fetch(`${API_URL}/leads/${leadId}/follow-ups/${followUpId}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok) throw new Error('Failed to delete follow-up');
+            
+            // Update the lead in state
+            setLeads(leads.map(l => {
+                if (l._id === leadId) {
+                    return { ...l, followUps: (l.followUps || []).filter(f => f._id !== followUpId) };
+                }
+                return l;
+            }));
+        } catch (err) {
+            setError(err.message);
+            console.error('Error deleting follow-up:', err);
+        }
+    };
+
+    const activeLeadsCount = leads.filter(l => l.status === 'New' || l.status === 'Contacted').length;
+    const matchRate = leads.length ? Math.round((leads.filter(l => l.status === 'Won').length / leads.length) * 100) : 0;
+
+    return (
+        <CRMContext.Provider value={{ 
+            leads, 
+            addLead, 
+            updateStatus, 
+            deleteLead,
+            addFollowUp,
+            deleteFollowUp,
+            stats: { total: leads.length, active: activeLeadsCount, conversion: matchRate },
+            loading,
+            error
+        }}>
+            {children}
+        </CRMContext.Provider>
+    );
+};
