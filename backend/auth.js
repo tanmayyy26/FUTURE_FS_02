@@ -100,3 +100,23 @@ export function authMiddleware(req, res, next) {
   req.admin = decoded;
   next();
 }
+
+// Change password
+export async function changePassword(adminId, currentPassword, newPassword) {
+  await initializeAdmins();
+  
+  const admin = admins.find(a => a.id === adminId);
+  if (!admin) {
+    throw new Error('Admin not found');
+  }
+
+  const isPasswordValid = await bcryptjs.compare(currentPassword, admin.password);
+  if (!isPasswordValid) {
+    throw new Error('Current password is incorrect');
+  }
+
+  const hashedPassword = await bcryptjs.hash(newPassword, 10);
+  admin.password = hashedPassword;
+
+  return { id: admin.id, email: admin.email, name: admin.name };
+}

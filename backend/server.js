@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { generateToken, verifyToken, registerAdmin, loginAdmin, authMiddleware } from './auth.js';
+import { generateToken, verifyToken, registerAdmin, loginAdmin, authMiddleware, changePassword } from './auth.js';
 import { connectDB, getAllLeads, getLeadById, createLead, updateLead, deleteLead, isUsingInMemory } from './db.js';
 import { ObjectId } from 'mongodb';
 
@@ -50,6 +50,21 @@ app.post('/api/auth/register', async (req, res) => {
 // GET - Verify Token
 app.get('/api/auth/verify', authMiddleware, (req, res) => {
   res.json({ admin: req.admin });
+});
+
+// POST - Change Password
+app.post('/api/auth/change-password', authMiddleware, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ error: 'Current and new password required' });
+    }
+    
+    const admin = await changePassword(req.admin.id, currentPassword, newPassword);
+    res.json({ message: 'Password changed successfully', admin });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 });
 
 // ==================== Leads API Routes ====================

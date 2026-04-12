@@ -57,7 +57,7 @@ const Dashboard = () => {
                     <h2>Recent Leads</h2>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         {recentLeads.map(lead => (
-                            <div key={lead.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', borderBottom: 'var(--glass-border)' }}>
+                            <div key={lead._id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', borderBottom: 'var(--glass-border)' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                     <div style={{
                                         width: '40px', height: '40px', borderRadius: '50%', background: 'var(--bg-secondary)',

@@ -9,11 +9,21 @@ export const CRMProvider = ({ children }) => {
     const [leads, setLeads] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [admin, setAdmin] = useState(() => {
+        // Load admin from localStorage on init
+        const stored = localStorage.getItem('admin');
+        return stored ? JSON.parse(stored) : null;
+    });
+    const [isAuthenticated, setIsAuthenticated] = useState(() => {
+        return !!localStorage.getItem('authToken');
+    });
 
     // Fetch leads from backend
     useEffect(() => {
-        fetchLeads();
-    }, []);
+        if (isAuthenticated) {
+            fetchLeads();
+        }
+    }, [isAuthenticated]);
 
     const fetchLeads = async () => {
         try {
@@ -138,6 +148,14 @@ export const CRMProvider = ({ children }) => {
     const activeLeadsCount = leads.filter(l => l.status === 'New' || l.status === 'Contacted').length;
     const matchRate = leads.length ? Math.round((leads.filter(l => l.status === 'Won').length / leads.length) * 100) : 0;
 
+    const logout = () => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('admin');
+        setAdmin(null);
+        setIsAuthenticated(false);
+        setLeads([]);
+    };
+
     return (
         <CRMContext.Provider value={{ 
             leads, 
@@ -146,6 +164,9 @@ export const CRMProvider = ({ children }) => {
             deleteLead,
             addFollowUp,
             deleteFollowUp,
+            logout,
+            admin,
+            isAuthenticated,
             stats: { total: leads.length, active: activeLeadsCount, conversion: matchRate },
             loading,
             error
