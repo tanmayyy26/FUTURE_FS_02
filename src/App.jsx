@@ -39,37 +39,44 @@ const SettingsPageWrapper = () => {
   return <Settings admin={admin} />;
 };
 
-function App() {
+// App Router with authenticated routes
+const AppRouter = () => {
   const { isAuthenticated } = useCRM();
 
   return (
+    <Router>
+      <Routes>
+        {/* Login Route */}
+        <Route path="/login" element={
+          <Login onLoginSuccess={() => {}} />
+        } />
+
+        {/* Protected Routes */}
+        <Route 
+          path="/" 
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <AppLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="leads" element={<Leads />} />
+          <Route path="settings" element={<SettingsPageWrapper />} />
+        </Route>
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </Router>
+  );
+};
+
+function App() {
+  return (
     <CRMProvider>
-      <Router>
-        <Routes>
-          {/* Login Route */}
-          <Route path="/login" element={
-            <Login onLoginSuccess={() => {}} />
-          } />
-
-          {/* Protected Routes */}
-          <Route 
-            path="/" 
-            element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
-                <AppLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="leads" element={<Leads />} />
-            <Route path="settings" element={<SettingsPageWrapper />} />
-          </Route>
-
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-      </Router>
+      <AppRouter />
     </CRMProvider>
   );
 }
