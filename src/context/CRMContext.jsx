@@ -40,12 +40,21 @@ export const CRMProvider = ({ children }) => {
         }
     };
 
+    // Helper function to get auth headers
+    const getAuthHeaders = () => {
+        const token = localStorage.getItem('authToken');
+        return {
+            'Content-Type': 'application/json',
+            ...(token && { 'Authorization': `Bearer ${token}` })
+        };
+    };
+
     const addLead = async (lead) => {
         try {
             console.log('Adding lead:', lead);
             const response = await fetch(`${API_URL}/leads`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getAuthHeaders(),
                 body: JSON.stringify(lead)
             });
             
@@ -76,7 +85,7 @@ export const CRMProvider = ({ children }) => {
         try {
             const response = await fetch(`${API_URL}/leads/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getAuthHeaders(),
                 body: JSON.stringify({ status: newStatus })
             });
             if (!response.ok) throw new Error('Failed to update lead');
@@ -91,7 +100,8 @@ export const CRMProvider = ({ children }) => {
     const deleteLead = async (id) => {
         try {
             const response = await fetch(`${API_URL}/leads/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: getAuthHeaders()
             });
             if (!response.ok) throw new Error('Failed to delete lead');
             setLeads(leads.filter(l => l._id !== id));
@@ -105,7 +115,7 @@ export const CRMProvider = ({ children }) => {
         try {
             const response = await fetch(`${API_URL}/leads/${leadId}/follow-ups`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getAuthHeaders(),
                 body: JSON.stringify({ note, date })
             });
             if (!response.ok) throw new Error('Failed to add follow-up');
@@ -128,7 +138,8 @@ export const CRMProvider = ({ children }) => {
     const deleteFollowUp = async (leadId, followUpId) => {
         try {
             const response = await fetch(`${API_URL}/leads/${leadId}/follow-ups/${followUpId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: getAuthHeaders()
             });
             if (!response.ok) throw new Error('Failed to delete follow-up');
             

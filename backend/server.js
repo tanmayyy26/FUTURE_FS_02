@@ -88,8 +88,8 @@ app.get('/api/leads/:id', async (req, res) => {
   }
 });
 
-// POST - Create new lead
-app.post('/api/leads', async (req, res) => {
+// POST - Create new lead (Admin only)
+app.post('/api/leads', authMiddleware, async (req, res) => {
   try {
     const { name, email, source, status = 'New', notes = '' } = req.body;
     if (!name || !email) return res.status(400).json({ error: 'Name and email required' });
@@ -101,8 +101,8 @@ app.post('/api/leads', async (req, res) => {
   }
 });
 
-// PUT - Update lead
-app.put('/api/leads/:id', async (req, res) => {
+// PUT - Update lead (Admin only)
+app.put('/api/leads/:id', authMiddleware, async (req, res) => {
   try {
     const { status, name, email, source, notes } = req.body;
     const updateData = {};
@@ -120,8 +120,8 @@ app.put('/api/leads/:id', async (req, res) => {
   }
 });
 
-// DELETE - Delete lead
-app.delete('/api/leads/:id', async (req, res) => {
+// DELETE - Delete lead (Admin only)
+app.delete('/api/leads/:id', authMiddleware, async (req, res) => {
   try {
     const lead = await getLeadById(req.params.id);
     if (!lead) return res.status(404).json({ error: 'Lead not found' });
@@ -147,8 +147,8 @@ app.get('/api/leads/:id/follow-ups', async (req, res) => {
   }
 });
 
-// POST - Add follow-up note to lead
-app.post('/api/leads/:id/follow-ups', async (req, res) => {
+// POST - Add follow-up note to lead (Admin only)
+app.post('/api/leads/:id/follow-ups', authMiddleware, async (req, res) => {
   try {
     const { note, date } = req.body;
     if (!note) return res.status(400).json({ error: 'Note required' });
@@ -174,8 +174,8 @@ app.post('/api/leads/:id/follow-ups', async (req, res) => {
   }
 });
 
-// DELETE - Delete follow-up from lead
-app.delete('/api/leads/:id/follow-ups/:followUpId', async (req, res) => {
+// DELETE - Delete follow-up from lead (Admin only)
+app.delete('/api/leads/:id/follow-ups/:followUpId', authMiddleware, async (req, res) => {
   try {
     const lead = await getLeadById(req.params.id);
     if (!lead) return res.status(404).json({ error: 'Lead not found' });
