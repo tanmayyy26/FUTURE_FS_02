@@ -228,17 +228,24 @@ app.get('/api/health', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB and start server
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`🚀 CRM Backend running on http://localhost:${PORT}`);
-    console.log(`📝 POST  http://localhost:${PORT}/api/contact`);
-    console.log(`📋 GET  http://localhost:${PORT}/api/leads`);
+// Connect to MongoDB and start server only if not in Vercel serverless
+if (!process.env.VERCEL) {
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`🚀 CRM Backend running on http://localhost:${PORT}`);
+      console.log(`📝 POST  http://localhost:${PORT}/api/contact`);
+      console.log(`📋 GET  http://localhost:${PORT}/api/leads`);
+    });
+  }).catch(error => {
+    console.error('Failed to start server:', error);
+    process.exit(1);
   });
-}).catch(error => {
-  console.error('Failed to start server:', error);
-  process.exit(1);
-});
+} else {
+  // In Vercel serverless, just connect to DB
+  connectDB().catch(error => {
+    console.error('Failed to connect to DB:', error);
+  });
+}
 
 // Export for Vercel serverless
 export default app;
