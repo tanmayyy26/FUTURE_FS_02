@@ -1,16 +1,14 @@
 {
   "version": 2,
-  "buildCommand": "npm run build && cd backend && npm install",
-  "outputDirectory": "dist",
-  "framework": "vite",
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api"
+  "experimentalServices": {
+    "frontend": {
+      "routePrefix": "/",
+      "framework": "vite"
     },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
+    "backend": {
+      "runtime": "@vercel/node",
+      "entrypoint": "backend/server.js",
+      "routePrefix": "/api"
     }
-  ]
+  }
 }
