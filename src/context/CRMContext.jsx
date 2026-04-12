@@ -32,18 +32,33 @@ export const CRMProvider = ({ children }) => {
 
     const addLead = async (lead) => {
         try {
+            console.log('Adding lead:', lead);
             const response = await fetch(`${API_URL}/leads`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(lead)
             });
-            if (!response.ok) throw new Error('Failed to add lead');
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to add lead');
+            }
+            
             const newLead = await response.json();
+            console.log('Lead added successfully:', newLead);
+            
             setLeads([newLead, ...leads]);
+            setError(null);
+            
+            // Show success message
+            alert('Lead added successfully!');
+            
             return newLead;
         } catch (err) {
-            setError(err.message);
+            const errorMsg = err.message || 'Failed to add lead';
+            setError(errorMsg);
             console.error('Error adding lead:', err);
+            alert('Error: ' + errorMsg);
         }
     };
 
