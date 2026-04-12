@@ -239,3 +239,7 @@ connectDB().then(() => {
   console.error('Failed to start server:', error);
   process.exit(1);
 });
+
+// Export for Vercel serverless
+export default app;
+});
