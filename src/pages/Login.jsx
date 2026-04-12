@@ -6,7 +6,7 @@ const Login = ({ onLoginSuccess }) => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: 'admin@crm.com',
-        password: 'admin123'
+        password: 'AdminSecure@2024'
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -135,7 +135,7 @@ const Login = ({ onLoginSuccess }) => {
                 }}>
                     <p style={{ margin: '0 0 0.5rem', fontWeight: 500 }}>Demo Credentials:</p>
                     <p style={{ margin: '0.25rem 0' }}>Email: <code style={{ background: 'var(--bg-primary)', padding: '0.25rem 0.5rem', borderRadius: '4px' }}>admin@crm.com</code></p>
-                    <p style={{ margin: '0.25rem 0' }}>Password: <code style={{ background: 'var(--bg-primary)', padding: '0.25rem 0.5rem', borderRadius: '4px' }}>admin123</code></p>
+                    <p style={{ margin: '0.25rem 0' }}>Password: <code style={{ background: 'var(--bg-primary)', padding: '0.25rem 0.5rem', borderRadius: '4px' }}>AdminSecure@2024</code></p>
                 </div>
             </div>
         </div>

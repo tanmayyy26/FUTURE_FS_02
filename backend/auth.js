@@ -14,7 +14,7 @@ let adminsInitialized = false;
 async function initializeAdmins() {
   if (adminsInitialized) return;
   
-  const hashedPassword = await bcryptjs.hash('admin123', 10);
+  const hashedPassword = await bcryptjs.hash('AdminSecure@2024', 10);
   admins = [
     {
       id: 1,
