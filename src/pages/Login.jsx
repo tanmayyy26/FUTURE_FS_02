@@ -23,7 +23,7 @@ const Login = ({ onLoginSuccess }) => {
             // For local dev: use http://localhost:5000/api
             const apiUrl = import.meta.env.VITE_API_URL || 
                           (window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api');
-            const response = await fetch(`${apiUrl}/auth/login`, {
+            const response = await fetch(`${apiUrl}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)

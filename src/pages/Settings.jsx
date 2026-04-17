@@ -36,7 +36,7 @@ const Settings = ({ admin }) => {
         setLoading(true);
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch(`${API_URL}/auth/change-password`, {
+            const response = await fetch(`${API_URL}/change-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
