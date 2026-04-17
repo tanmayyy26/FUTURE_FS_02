@@ -1,5 +1,5 @@
-import bcryptjs from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+const bcryptjs = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key_change_in_production';
 const ADMIN_EMAIL = 'admin@crm.com';
@@ -13,7 +13,7 @@ function verifyToken(token) {
   }
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -63,4 +63,4 @@ export default async function handler(req, res) {
     console.error('Change password error:', error);
     return res.status(500).json({ error: error.message });
   }
-}
+};

@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import bcryptjs from 'bcryptjs';
+const jwt = require('jsonwebtoken');
+const bcryptjs = require('bcryptjs');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key_change_in_production';
 
@@ -26,7 +26,7 @@ function generateToken(admin) {
   );
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -56,4 +56,4 @@ export default async function handler(req, res) {
     console.error('Login error:', error);
     return res.status(401).json({ error: error.message });
   }
-}
+};
